@@ -39,9 +39,25 @@
 			keyboard:true
 		}
 
+		function food (x,y,size,color){
+			this.x = x;
+			this.y = y;
+			this.size = size;
+			this.color = color;
+			this.draw = function(){
+				ctx.beginPath();
+			    ctx.arc(this.x, this.y, this.size, 0, Math.PI*2, true);
+			    ctx.closePath();
+			    ctx.fillStyle = this.color;
+			    ctx.fill();
+			}
+		}
+
+		var eatables = [];
+
 		function repaint () {
 			window.requestAnimationFrame(repaint);
-
+			ctx.clearRect(0,0, canvas.width, canvas.height)
 			var path=new Path2D();
 
 			path.arc(vent.x,vent.y,vent.size,0,Math.PI*2,true); // Outer circle
@@ -49,11 +65,18 @@
 
 			vent.x += vent.xmove;
 			vent.y += vent.ymove;
+
+			eatables.push(new food(getRandomInt(0,canvas.width),getRandomInt(0,canvas.height),getRandomInt(0,6),"rgb(0,0,0)"))
+
+			for (var i = 0; i < eatables.length; i++) {
+				eatables[i].draw();
+			};
 		}
 
 		window.onkeydown = function(e) {
 		    var key = e.keyCode ? e.keyCode : e.which;
-		    //alert(key);
+		    alert(key);
+		    console.log(key)
 		    if( vent.keyboard == true){
 		        if (key == 81) {//left
 		            vent.xmove = -1;
@@ -63,6 +86,8 @@
 		            vent.xmove = 1;
 		        }else if (key == 83){//down
 		            vent.ymove = 1;
+		        }else if(key == 65){
+		        	vent.keyboard = vent.keyboard ? false:true;
 		        }else {
 		            vent.xmove = 0;
 		            vent.ymove = 0;
@@ -76,11 +101,15 @@
 		            vent.xmove = 1;
 		        }else if (key == 83){//down
 		            vent.ymove = 1;
+		        }else if(key == 81){
+		        	vent.keyboard = vent.keyboard ? false:true;
 		        }else {
 		            vent.xmove = 0;
 		            vent.ymove = 0;
 		        }
 		    }
+
+
 		}
 
 		window.onkeyup = function(e) {
@@ -107,6 +136,10 @@
 		            vent.ymove = 0;
 		        }
 		    }
+		}
+
+		function getRandomInt(min, max) {
+		  return Math.floor(Math.random() * (max - min)) + min;
 		}
 
 		window.requestAnimationFrame(repaint);
