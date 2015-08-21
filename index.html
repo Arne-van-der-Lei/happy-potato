@@ -33,7 +33,7 @@
 		var vent = {
 			x:100,
 			y:100,
-			size:5,
+			size:10,
 			ymove:0,
 			xmove:0,
 			keyboard:true
@@ -65,7 +65,7 @@
 			ctx.stroke(path);
 			ctx.fillStyle = "#000"
 			ctx.font = "12px consolas";
-  			ctx.fillText(Math.round(vent.size*100)/100, vent.x - (vent.size + "").length * 4,vent.y + vent.size*2 + 5)
+  			ctx.fillText(Math.round(vent.size*100)/100, vent.x - (Math.round(vent.size*100)/100 + "").length * 4,vent.y +6)
 
 			vent.x += vent.xmove;
 			vent.y += vent.ymove;
