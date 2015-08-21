@@ -39,37 +39,50 @@
 			keyboard:true
 		}
 
-		function food (x,y,size,color){
+		function food (x,y,size,bad){
 			this.x = x;
 			this.y = y;
 			this.size = size;
-			this.color = color;
+			this.bad = bad;
 			this.draw = function(){
 				ctx.beginPath();
 			    ctx.arc(this.x, this.y, this.size, 0, Math.PI*2, true);
 			    ctx.closePath();
-			    ctx.fillStyle = this.color;
+			    ctx.fillStyle = this.bad ? "#C00" :"#000";
 			    ctx.fill();
 			}
 		}
 
 		var eatables = [];
-
+		spawnEatable();
 		function repaint () {
 			window.requestAnimationFrame(repaint);
-			ctx.clearRect(0,0, canvas.width, canvas.height)
-			var path=new Path2D();
+			ctx.fillStyle = 'rgba(255,255,255,0.3)';
+			ctx.fillRect(0,0,canvas.width,canvas.height);
+			var path = new Path2D();
 
-			path.arc(vent.x,vent.y,vent.size,0,Math.PI*2,true); // Outer circle
+			path.arc(vent.x,vent.y,Math.floor(vent.size),0,Math.PI*2,true); 
 			ctx.stroke(path);
+			ctx.fillStyle = "#000"
+			ctx.font = "12px consolas";
+  			ctx.fillText(Math.round(vent.size*100)/100, vent.x - (vent.size + "").length * 4,vent.y + vent.size*2 + 5)
 
 			vent.x += vent.xmove;
 			vent.y += vent.ymove;
 
-			eatables.push(new food(getRandomInt(0,canvas.width),getRandomInt(0,canvas.height),getRandomInt(0,6),"rgb(0,0,0)"))
-
+			if(eatables.length == 0){
+				spawnEatable();
+			}
+			if(eatables[eatables.length-1].bad ){
+				spawnEatable();
+			}
 			for (var i = 0; i < eatables.length; i++) {
-				eatables[i].draw();
+				if(CheckIfClose(eatables[i].x,eatables[i].y,vent.size,vent.x,vent.y)){
+					vent.size += eatables[i].bad ? - eatables[i].size / 10 : eatables[i].size / 10 ;
+					eatables.splice(i,1);
+				}else{
+					eatables[i].draw();
+				}
 			};
 		}
 
@@ -140,6 +153,17 @@
 
 		function getRandomInt(min, max) {
 		  return Math.floor(Math.random() * (max - min)) + min;
+		}
+
+		function CheckIfClose(x,y,size,dx,dy){
+			if(Math.sqrt(Math.pow(x-dx,2)+Math.pow(y-dy,2))< size){
+				return true;
+			}
+			return false;
+		}
+
+		function spawnEatable(){
+			eatables.push(new food(getRandomInt(0,canvas.width),getRandomInt(0,canvas.height),getRandomInt(1,6),getRandomInt(0,2) == 0 ? true: false))
 		}
 
 		window.requestAnimationFrame(repaint);
