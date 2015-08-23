@@ -21,13 +21,14 @@
 				}
 		</style>
 	</head>
-	<body>
-		<iframe src="http://loli.dance/" frameborder ></iframe>
+	<body id="body">
+		<!--<iframe src="http://loli.dance/" frameborder ></iframe>-->
 		<canvas id="happy" width="1920" height="1080"></canvas>
 
 		<script>
-
 		var canvas = document.getElementById('happy');
+		canvas.width = document.body.clientWidth;
+		canvas.height = document.body.clientHeight;
 		var ctx = canvas.getContext('2d');
 
 		var vent = {
@@ -54,7 +55,7 @@
 		}
 
 		var eatables = [];
-		spawnEatable();
+
 		function repaint () {
 			window.requestAnimationFrame(repaint);
 			ctx.fillStyle = 'rgba(255,255,255,0.3)';
@@ -73,9 +74,11 @@
 			if(eatables.length == 0){
 				spawnEatable();
 			}
+
 			if(eatables[eatables.length-1].bad ){
 				spawnEatable();
 			}
+
 			for (var i = 0; i < eatables.length; i++) {
 				if(CheckIfClose(eatables[i].x,eatables[i].y,vent.size,vent.x,vent.y)){
 					vent.size += eatables[i].bad ? - eatables[i].size / 10 : eatables[i].size / 10 ;
