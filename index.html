@@ -47,10 +47,19 @@
 			this.bad = bad;
 			this.draw = function(){
 				ctx.beginPath();
-			    ctx.arc(this.x, this.y, this.size, 0, Math.PI*2, true);
+			    ctx.arc(Math.floor(this.x), Math.floor(this.y), this.size, 0, Math.PI*2, true);
 			    ctx.closePath();
 			    ctx.fillStyle = this.bad ? "#C00" :"#000";
 			    ctx.fill();
+			}
+			this.move = function(){
+				var dx = this.x - vent.x;
+				var dy = this.y - vent.y;
+				var d = Math.sqrt(dx * dx + dy * dy);
+
+				this.x = this.x +(1/d)*(vent.x - this.x);
+				this.y = this.y +(1/d)*(vent.y - this.y);
+				console.log();
 			}
 		}
 
@@ -84,7 +93,9 @@
 					vent.size += eatables[i].bad ? - eatables[i].size / 10 : eatables[i].size / 10 ;
 					eatables.splice(i,1);
 				}else{
+					eatables[i].move();
 					eatables[i].draw();
+
 				}
 			};
 		}
